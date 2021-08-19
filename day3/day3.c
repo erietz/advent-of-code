@@ -50,71 +50,23 @@ void buildMap(int rows, int cols, char data[rows][cols]) {
     }
 }
 
-int r1d1(char tree, int rows, int cols, char data[rows][cols]) {
-    int currColumn = 0;
-    int numTrees = 0;
-    for (int i=0; i<rows; i++) {
-        char location = data[i][currColumn];
-        if (location == tree) {
-            numTrees += 1;
-        }
-        currColumn += 1;
-        currColumn %= cols;
-    }
-    return numTrees;
-}
+int traverseMap(
+        char tree,
+        int rows,
+        int cols,
+        char data[rows][cols],
+        int right,
+        int down
+        ) {
 
-int r3d1(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<rows; i++) {
+    for (int i=0; i<rows; i = i + down) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
-        currColumn += 3;
-        currColumn %= cols;
-    }
-    return numTrees;
-}
-
-int r5d1(char tree, int rows, int cols, char data[rows][cols]) {
-    int currColumn = 0;
-    int numTrees = 0;
-    for (int i=0; i<rows; i++) {
-        char location = data[i][currColumn];
-        if (location == tree) {
-            numTrees += 1;
-        }
-        currColumn += 5;
-        currColumn %= cols;
-    }
-    return numTrees;
-}
-
-int r7d1(char tree, int rows, int cols, char data[rows][cols]) {
-    int currColumn = 0;
-    int numTrees = 0;
-    for (int i=0; i<rows; i++) {
-        char location = data[i][currColumn];
-        if (location == tree) {
-            numTrees += 1;
-        }
-        currColumn += 7;
-        currColumn %= cols;
-    }
-    return numTrees;
-}
-
-int r1d2(char tree, int rows, int cols, char data[rows][cols]) {
-    int currColumn = 0;
-    int numTrees = 0;
-    for (int i=0; i<rows; i = i + 2) {
-        char location = data[i][currColumn];
-        if (location == tree) {
-            numTrees += 1;
-        }
-        currColumn += 1;
+        currColumn += right;
         currColumn %= cols;
     }
     return numTrees;
@@ -130,11 +82,11 @@ int main() {
 
     char tree = '#';
     int finalResult =
-        r1d1(tree, stats.rows, stats.columns, data) *
-        r3d1(tree, stats.rows, stats.columns, data) *
-        r5d1(tree, stats.rows, stats.columns, data) *
-        r7d1(tree, stats.rows, stats.columns, data) *
-        r1d2(tree, stats.rows, stats.columns, data);
+        traverseMap(tree, stats.rows, stats.columns, data, 1, 1) *
+        traverseMap(tree, stats.rows, stats.columns, data, 3, 1) *
+        traverseMap(tree, stats.rows, stats.columns, data, 5, 1) *
+        traverseMap(tree, stats.rows, stats.columns, data, 7, 1) *
+        traverseMap(tree, stats.rows, stats.columns, data, 1, 2);
 
     printf("The product is %i\n", finalResult);
 
