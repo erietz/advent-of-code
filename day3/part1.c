@@ -48,6 +48,75 @@ void buildMap(int numRows, int numColumns, char data[numRows][numColumns]) {
 
 }
 
+int r1d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+    int currColumn = 0;
+    int numTrees = 0;
+    for (int i=0; i<numRows; i++) {
+        char location = data[i][currColumn];
+        if (location == tree) {
+            numTrees += 1;
+        }
+        currColumn += 1;
+        currColumn %= numColumns;
+    }
+    return numTrees;
+}
+
+int r3d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+    int currColumn = 0;
+    int numTrees = 0;
+    for (int i=0; i<numRows; i++) {
+        char location = data[i][currColumn];
+        if (location == tree) {
+            numTrees += 1;
+        }
+        currColumn += 3;
+        currColumn %= numColumns;
+    }
+    return numTrees;
+}
+
+int r5d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+    int currColumn = 0;
+    int numTrees = 0;
+    for (int i=0; i<numRows; i++) {
+        char location = data[i][currColumn];
+        if (location == tree) {
+            numTrees += 1;
+        }
+        currColumn += 5;
+        currColumn %= numColumns;
+    }
+    return numTrees;
+}
+
+int r7d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+    int currColumn = 0;
+    int numTrees = 0;
+    for (int i=0; i<numRows; i++) {
+        char location = data[i][currColumn];
+        if (location == tree) {
+            numTrees += 1;
+        }
+        currColumn += 7;
+        currColumn %= numColumns;
+    }
+    return numTrees;
+}
+
+int r1d2(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+    int currColumn = 0;
+    int numTrees = 0;
+    for (int i=0; i<numRows; i = i + 2) {
+        char location = data[i][currColumn];
+        if (location == tree) {
+            numTrees += 1;
+        }
+        currColumn += 1;
+        currColumn %= numColumns;
+    }
+    return numTrees;
+}
 
 int main() {
 
@@ -60,18 +129,14 @@ int main() {
     buildMap(stats.rows, stats.columns, data);
 
     char tree[] = "#";
-    int currColumn = 0;
-    int numTrees = 0;
-    for (int i=0; i<stats.rows; i++) {
-        char location = data[i][currColumn];
-        if (location == tree[0]) {
-            numTrees += 1;
-        }
-        currColumn += 3;
-        currColumn %= stats.columns;
-    }
+    int finalResult =
+        r1d1(tree[0], stats.rows, stats.columns, data) *
+        r3d1(tree[0], stats.rows, stats.columns, data) *
+        r5d1(tree[0], stats.rows, stats.columns, data) *
+        r7d1(tree[0], stats.rows, stats.columns, data) *
+        r1d2(tree[0], stats.rows, stats.columns, data);
 
-    printf("Number of trees %d\n", numTrees);
+    printf("The product is %d\n", finalResult);
 
     return 0;
 }
