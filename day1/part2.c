@@ -206,6 +206,7 @@ int DATA[] = {
 int main() {
     size_t length = sizeof(DATA) / sizeof(DATA[0]);
 
+    int done = 0;   // To break out of loops when target is found
     for (int i=0; i<length; i++) {
         for (int j=0; j<length; j++) {
             for (int k=0; k<length; k++) {
@@ -213,11 +214,14 @@ int main() {
                     printf("%d + %d + %d = 2020\n", DATA[i], DATA[j], DATA[k]);
                     printf("%d + %d + %d = %d\n", DATA[i], DATA[j], DATA[k],
                             DATA[i] * DATA[j] * DATA[k]);
-                    goto end;   // break out of both loops
+
+                    done = 1;
+                    break;
                 }
             }
+            if (done) { break; }
         }
+        if (done) { break; }
     }
-    end:
     return 0;
 }
