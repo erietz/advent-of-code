@@ -2,21 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct filestat {
-    int columns;
-    int rows;
-} filestat;
+/* The product is 1206576000 */
+
+#define INPUTFILE "input.txt"   // file name of data file
+#define MAX_COLUMNS 500         // max characters per line estimate in INPUTFILE
+
+typedef struct filestat { int columns; int rows; } filestat;
 
 struct filestat getFileStats() {
-    char *filename = "input.txt";
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(INPUTFILE, "r");
 
     if (!file) {
-        printf("could not open %s\n", filename);
+        printf("could not open %s\n", INPUTFILE);
         exit(EXIT_FAILURE);
     }
 
-    char line[120];     // estimate of max number of columns in input file
+    char line[MAX_COLUMNS];     // estimate of max number of columns in input file
     int numColumns = 0; // actual max number of columns in input file
     int numRows = 0;    // actual number of rows in input file
     while (fgets(line, sizeof(line), file)) {
@@ -29,15 +30,17 @@ struct filestat getFileStats() {
 
     fclose(file);
 
-    filestat data = {.columns = numColumns, .rows = numRows};
-    return data;
+    filestat stats = {.columns = numColumns, .rows = numRows};
+    return stats;
 }
 
-void buildMap(int numRows, int numColumns, char data[numRows][numColumns]) {
-    char *filename = "input.txt";
-    FILE *file = fopen(filename, "r");
+// NOTE: This strategy uses Variable Length Arrays which seem not to be
+// supported by all C compilers.
+// See here: https://stackoverflow.com/a/3912959
+void buildMap(int rows, int cols, char data[rows][cols]) {
+    FILE *file = fopen(INPUTFILE, "r");
 
-    char line[120];     // estimate of max number of columns in input file
+    char line[MAX_COLUMNS];
     int currRow = 0;
     while (fgets(line, sizeof(line), file)) {
         for (int i=0; i<strlen(line); i++) {
@@ -45,75 +48,74 @@ void buildMap(int numRows, int numColumns, char data[numRows][numColumns]) {
         }
         currRow += 1;
     }
-
 }
 
-int r1d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+int r1d1(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<numRows; i++) {
+    for (int i=0; i<rows; i++) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
         currColumn += 1;
-        currColumn %= numColumns;
+        currColumn %= cols;
     }
     return numTrees;
 }
 
-int r3d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+int r3d1(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<numRows; i++) {
+    for (int i=0; i<rows; i++) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
         currColumn += 3;
-        currColumn %= numColumns;
+        currColumn %= cols;
     }
     return numTrees;
 }
 
-int r5d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+int r5d1(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<numRows; i++) {
+    for (int i=0; i<rows; i++) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
         currColumn += 5;
-        currColumn %= numColumns;
+        currColumn %= cols;
     }
     return numTrees;
 }
 
-int r7d1(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+int r7d1(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<numRows; i++) {
+    for (int i=0; i<rows; i++) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
         currColumn += 7;
-        currColumn %= numColumns;
+        currColumn %= cols;
     }
     return numTrees;
 }
 
-int r1d2(char tree, int numRows, int numColumns, char data[numRows][numColumns]) {
+int r1d2(char tree, int rows, int cols, char data[rows][cols]) {
     int currColumn = 0;
     int numTrees = 0;
-    for (int i=0; i<numRows; i = i + 2) {
+    for (int i=0; i<rows; i = i + 2) {
         char location = data[i][currColumn];
         if (location == tree) {
             numTrees += 1;
         }
         currColumn += 1;
-        currColumn %= numColumns;
+        currColumn %= cols;
     }
     return numTrees;
 }
@@ -121,22 +123,20 @@ int r1d2(char tree, int numRows, int numColumns, char data[numRows][numColumns])
 int main() {
 
     filestat stats = getFileStats();
-    /* printf("%d\n", stats.columns); */
-    /* printf("%d\n", stats.rows); */
 
     char data[stats.rows][stats.columns];
 
     buildMap(stats.rows, stats.columns, data);
 
-    char tree[] = "#";
+    char tree = '#';
     int finalResult =
-        r1d1(tree[0], stats.rows, stats.columns, data) *
-        r3d1(tree[0], stats.rows, stats.columns, data) *
-        r5d1(tree[0], stats.rows, stats.columns, data) *
-        r7d1(tree[0], stats.rows, stats.columns, data) *
-        r1d2(tree[0], stats.rows, stats.columns, data);
+        r1d1(tree, stats.rows, stats.columns, data) *
+        r3d1(tree, stats.rows, stats.columns, data) *
+        r5d1(tree, stats.rows, stats.columns, data) *
+        r7d1(tree, stats.rows, stats.columns, data) *
+        r1d2(tree, stats.rows, stats.columns, data);
 
-    printf("The product is %d\n", finalResult);
+    printf("The product is %i\n", finalResult);
 
     return 0;
 }
