@@ -2,21 +2,27 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* Number correct passwords: 564 */
+
 int validPassword(char *string) {
 
-    char stringCopy[500];
+    // Copy the string because strtok modifies strings in place
+    int copyLength = strlen(string);
+    char stringCopy[copyLength];
     strcpy(stringCopy, string);
 
-    char *min = strtok(stringCopy, "-");
-    char *max  = strtok(NULL, " ");
-    char *character  = strtok(NULL, ":");
-    char *password  = strtok(NULL, " ");
-    /* printf("%s %s %s %s\n", min, max, character, password); */
+    //--------------------------------------------
+    // Example password: 3-5 f: fgfff
+    //--------------------------------------------
 
-    char *ptr;
+    // strtok will replace its second argument will null terminator
+    char *min = strtok(stringCopy, "-");    // 3
+    char *max  = strtok(NULL, " ");         // 5
+    char *character  = strtok(NULL, ":");   // f
+    char *password  = strtok(NULL, " ");    // fgfff
 
-    long minInt = strtol(min, &ptr, 10);
-    long maxInt = strtol(max, &ptr, 10);
+    long minInt = strtol(min, NULL, 10);
+    long maxInt = strtol(max, NULL, 10);
     char letter = *character;
 
     int occurances = 0;
@@ -44,15 +50,13 @@ int main() {
     }
 
     int numCorrectPasswords = 0;
+    // fgets will read string until \n character is encountered or the limit
+    // defined by the second argument of the function is reached. We can assume
+    // in this case that the length of any line won't be longer than 500 chars.
     char line[500];
     while (fgets(line, sizeof(line), infile)) {
-
         int valid = validPassword(line);
-
         numCorrectPasswords += valid;
-
-        /* printf("%d\n", valid); */
-        /* printf("%s", line); */
     }
 
     printf("Number correct passwords: %d\n", numCorrectPasswords);

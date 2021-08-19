@@ -4,18 +4,21 @@
 
 int validPassword(char *string) {
 
-    char stringCopy[500];
+    int copyLength = strlen(string);
+    char stringCopy[copyLength];
     strcpy(stringCopy, string);
 
-    char *idx1 = strtok(stringCopy, "-");
-    char *idx2  = strtok(NULL, " ");
-    char *character  = strtok(NULL, ":");
-    char *password  = strtok(NULL, " ");
+    //--------------------------------------------
+    // Example password: 3-5 f: fgfff
+    //--------------------------------------------
 
-    char *ptr;
+    char *idx1 = strtok(stringCopy, "-");   // 3
+    char *idx2  = strtok(NULL, " ");        // 5
+    char *character  = strtok(NULL, ":");   // f
+    char *password  = strtok(NULL, " ");    // fgfff
 
-    int index1 = (int)strtol(idx1, &ptr, 10) - 1;
-    int index2 = (int)strtol(idx2, &ptr, 10) - 1;
+    int index1 = (int)strtol(idx1, NULL, 10) - 1;   // problem indexes from 1 not 0
+    int index2 = (int)strtol(idx2, NULL, 10) - 1;
     char letter = *character;
 
     int length = strlen(password);
@@ -50,13 +53,8 @@ int main() {
     int numCorrectPasswords = 0;
     char line[500];
     while (fgets(line, sizeof(line), infile)) {
-
         int valid = validPassword(line);
-
         numCorrectPasswords += valid;
-
-        /* printf("%d\n", valid); */
-        /* printf("%s", line); */
     }
 
     printf("Number correct passwords: %d\n", numCorrectPasswords);
