@@ -15,18 +15,6 @@ typedef struct passport {
     int hcl;
 } passport;
 
-/*
-typedef struct passport {
-    int byr;    // 1937
-    int iyr;    // 2017
-    int eyr;    // 2020
-    char *hgt;  // 183cm
-    char *ecl;  // gry
-    int pid;    // 860033327
-    int cid;    // 147
-    int hcl;    // #fffffd
-} passport;
-*/
 
 passport addKey(char *key, passport pp) {
     if ( strcmp(key, "byr") == 0 ) {
@@ -58,15 +46,8 @@ passport parseString(char *str, passport pp) {
     char *key = strtok(string, ":");
     char *value = strtok(NULL, " ");
 
-    /* puts(key); */
-    /* puts(value); */
-
-    /* pp = addKey(key, pp); */
-
     while (key != NULL && value != NULL) {
         pp = addKey(key, pp);
-        /* puts(key); */
-        /* puts(value); */
 
         key = strtok(NULL, ":");
         value = strtok(NULL, " ");
@@ -118,7 +99,6 @@ int subMain() {
             initializePassport(&pp);
         } else {
             pp = parseString(line, pp);
-            /* printf("%i\n", pp.pid); */
         }
     }
     valid = validatePassport(&pp);
@@ -131,22 +111,8 @@ int subMain() {
 
 int main() {
 
-
-    /* char strTest[] = "pid:561068005 eyr:2025 iyr:2017 cid:139 ecl:blu hcl:#ceb3a1"; */
-    /* passport pp = initializePassport(); */
-    /* pp = parseString(strTest, pp); */
-    /* printf("pid %i\n", pp.pid); */
-    /* printf("eyr %i\n", pp.eyr); */
-    /* printf("iyr %i\n", pp.iyr); */
-    /* printf("cid %i\n", pp.cid); */
-    /* printf("ecl %i\n", pp.ecl); */
-    /* printf("hcl %i\n", pp.hcl); */
-    /* printf("hgt %i\n", pp.hgt); */
-    /* printf("byr %i\n", pp.byr); */
-    /* printf("valid: %d\n", validatePassport(pp)); */
-
     int result = subMain();
-    printf("%i\n", result);
+    printf("Number of valid passports = %i\n", result);
 
     return 0;
 }
